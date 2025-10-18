@@ -1,7 +1,7 @@
 from asyncio import tasks
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import tasks_routes
+from app.api.routes import tasks_routes
 import uvicorn
 
 app = FastAPI()
@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-app.include_router(tasks_routes.Router, prefix='/task',tags=['tasks'])
+app.include_router(tasks_routes.router, prefix='/task',tags=['tasks'])
 
 @app.get('/')
 def read_root():

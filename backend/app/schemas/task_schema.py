@@ -1,7 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
 class TaskBase(BaseModel):
-    title: str
     description: str
     status: str = 'pending'
     completed: bool = False
@@ -13,3 +12,4 @@ class TaskCreate(TaskBase):
 
 class Task(TaskBase):
     id: int
+    

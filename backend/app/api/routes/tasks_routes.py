@@ -1,10 +1,26 @@
 from fastapi import APIRouter
-from schemas.task_schema import Task,TaskCreate
+from app.Controller.task_controller import addTask, in_progress, showTasks, done
+from app.schemas.task_schema import Task, TaskCreate
 
 router = APIRouter()
 
 fake_db = []
 
-@router.get('/',response_model=list[Task])
+
+@router.get('/', response_model=list[Task])
 def get_tasks():
-    return fake_db
+    return showTasks()
+
+
+@router.get('/in-progress', response_model=list[Task])
+def get_task_in_progress():
+    return in_progress()
+
+@router.get('/done')
+def get_task_done():
+    return done()
+
+
+@router.post('/', response_model=Task)
+def create_task(task: TaskCreate):
+    return addTask(task)
