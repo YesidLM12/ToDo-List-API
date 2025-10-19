@@ -1,8 +1,4 @@
-
-from ast import Return
 import json
-from queue import Empty
-from fastapi import FastAPI
 from app.schemas.task_schema import Task, TaskCreate
 
 
@@ -47,7 +43,7 @@ def show_for_status(status: str):
 
     task_status = [task for task in data if task.get(
         'status') == status]
-    
+
     if len(task_status) > 0:
         return task_status
     else:
@@ -74,15 +70,15 @@ def update_task_status(id: int, status: str):
         return {'message': 'Status update succesfully'}
     else:
         return {'error': 'Task not found'}
-    
 
-def update_task(id:int, description: str):
+
+def update_task(id: int, description: str):
     try:
         with open('tasks.json', 'r', encoding='utf-8') as D:
             data = json.load(D)
     except (FileNotFoundError, json.JSONDecodeError):
         return {'error': 'No tasks avaliable'}
-    
+
     find = False
     for task in data:
         if task.get('id') == id:
@@ -97,19 +93,19 @@ def update_task(id:int, description: str):
     else:
         return {'error': 'Task not found'}
 
+
 def delete(id: int):
     try:
         with open('tasks.json', 'r', encoding='utf-8') as D:
             data = json.load(D)
     except (FileNotFoundError, json.JSONDecodeError):
         return {'error': 'No tasks avaliable'}
-    
+
     newTask = [task for task in data if task.get('id') != id]
-    
+
     if len(newTask) == len(data):
         return {'error': 'Task not found'}
     else:
         with open('tasks.json', 'w', encoding='utf-8') as D:
             json.dump(newTask, D, indent=2, ensure_ascii=False)
         return {'message': 'Task delete succesfully'}
-    

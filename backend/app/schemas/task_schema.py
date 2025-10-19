@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict
+from typing import Optional
 
 class TaskBase(BaseModel):
     description: str
@@ -11,5 +12,5 @@ class TaskCreate(TaskBase):
     pass
 
 class Task(TaskBase):
-    id: int
+    id: Optional[str] = None
     
