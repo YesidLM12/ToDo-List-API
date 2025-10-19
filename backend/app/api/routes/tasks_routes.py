@@ -16,7 +16,8 @@ def get_tasks():
 def get_task_in_progress():
     return in_progress()
 
-@router.get('/done')
+
+@router.get('/pending', response_model=list[Task])
 def get_task_done():
     return done()
 
