@@ -9,6 +9,7 @@ router = APIRouter()
 def register_user(user: User):
     return register(user)
 
+
 @router.post('/login')
 def login_user(credentials: UserLogin):
     return login(credentials)

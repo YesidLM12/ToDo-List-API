@@ -1,3 +1,4 @@
+import datetime
 from fastapi import APIRouter, HTTPException
 from app.schemas.user_schema import User, UserLogin
 from app.core.database import user_collection
@@ -12,7 +13,9 @@ def register(user: User):
 
     user.password = hash_password(user.password)
     user_collection.insert_one(user.model_dump())
-    return {'message': 'User registeres succesfully'}
+    return {'message': 'User registeres succesfully',
+            'User': user
+            }
 
 
 def login(credentials: UserLogin):

@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from operator import setitem
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException, Depends
@@ -8,12 +7,27 @@ from fastapi.security import OAuth2PasswordBearer
 from app.core.config import settings
 
 
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+pwd_context = CryptContext(schemes=['bcrypt'], bcrypt__ident="2b", deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    password = str(password).strip()
+    encoded = password.encode('utf-8')
+    
+    if len(encoded) > 72:
+        encoded = encoded[:72]
+        password = encoded.decode('utf-8', errors='ignore')
+        
+    try:
+        hashed = pwd_context.hash(password)
+        print('hash generado correctamente')
+        return hashed
+    except Exception as e:
+        print('Error durante el hash: ', e)
+        raise
+
+    
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -22,7 +36,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_jwt_token(email: str) -> str:
     now = datetime.utcnow()
-    expire = now + timedelta(minutes= settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {
         'sub': email,
         'iat': int(now.timestamp()),
