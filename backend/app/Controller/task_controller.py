@@ -1,80 +1,49 @@
 import json
+
+from bson import ObjectId
 from app.schemas.task_schema import Task, TaskCreate
 from app.core.database import task_collection
+from app.helpers.task_serializer import tasks_serializer
 
 
 def addTask(task: TaskCreate):
     if len(task.description) < 3:
         return {'error': 'Description task must be more than 3 characters'}
-    
+
     task_collection.insert_one(task.model_dump())
     return {'message': 'Task add succesfully'}
 
-    try:
-        try:
-            with open('tasks.json', 'r', encoding='utf-8') as D:
-                data = json.load(D)
-        except (FileNotFoundError, json.JSONDecodeError):
-            data = []
-
-        new_task = Task(id=len(data) + 1, **task.model_dump())
-        data.append(new_task.model_dump())
-
-        with open('tasks.json', 'w', encoding='utf-8') as D:
-            json.dump(data, D, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(e)
-
-    return new_task
-
 
 def showTasks():
-    try:
-        with open('tasks.json', 'r', encoding='utf-8') as D:
-            data = json.load(D)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = []
-
-    if data:
-        return data
+    tasks = list(task_collection.find())
+    return tasks_serializer(tasks)
 
 
 def show_for_status(status: str):
-    try:
-        with open('tasks.json', 'r', encoding='utf-8') as D:
-            data = json.load(D)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {'error': 'No tasks avaliable'}
-
-    task_status = [task for task in data if task.get(
-        'status') == status]
-
-    if len(task_status) > 0:
-        return task_status
+    tasks = list(task_collection.find({'status': status}))
+    if tasks:
+        return tasks_serializer(tasks)
     else:
-        return {'error': 'No tasks avaliable'}
+        return {'message': 'Task not found'}
 
 
-def update_task_status(id: int, status: str):
-    try:
-        with open('tasks.json', 'r', encoding='utf-8') as D:
-            data = json.load(D)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {'error': 'No tasks avaliable'}
+def update_task_status(id: str, status: str):
+    id = id.strip()
+    result = task_collection.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {'status': status}}
+    )
 
-    found = False
-    for task in data:
-        if task.get('id') == id:
-            task['status'] = status
-            found = True
-            break
+    if status == 'completed':
+        task_collection.update_one(
+            {'_id': ObjectId(id)},
+            {'$set': {'completed': True}}
+        )
 
-    if found:
-        with open('tasks.json', 'w', encoding='utf-8') as D:
-            json.dump(data, D, indent=2, ensure_ascii=False)
-        return {'message': 'Status update succesfully'}
+    if result.modified_count == 1:
+        return {"message": "Task updated successfully"}
     else:
-        return {'error': 'Task not found'}
+        return {"error": "Task not found or status unchanged"}
 
 
 def update_task(id: int, description: str):

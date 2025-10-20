@@ -13,4 +13,7 @@ class TaskCreate(TaskBase):
 
 class Task(TaskBase):
     id: Optional[str] = None
+
+class StatusUpdate(BaseModel):
+    status: str
     
