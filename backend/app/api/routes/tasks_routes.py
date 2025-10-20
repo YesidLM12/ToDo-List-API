@@ -1,36 +1,37 @@
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.Controller.task_controller import addTask, delete, show_for_status, showTasks, update_task, update_task_status
 from app.schemas.task_schema import Task, TaskCreate
+from app.utils.auth import verify_jwt_token
 
 router = APIRouter()
 
 
 @router.get('/', response_model=list[Task])
-def get_tasks():
+def get_tasks(current_user: dict = Depends(verify_jwt_token)):
     return showTasks()
 
 
 @router.patch('/{id}')
-def uptdate_task(id: int, description: str):
+def uptdate_task(id: int, description: str, current_user: dict = Depends(verify_jwt_token)):
     return update_task(id, description)
 
 
 @router.get('/for-status', response_model=list[Task])
-def get_task_for_status(status: str):
+def get_task_for_status(status: str, current_user: dict = Depends(verify_jwt_token)):
     return show_for_status(status)
 
 
 @router.patch('/status/{id}')
-def set_status(id: int, status: str):
+def set_status(id: int, status: str, current_user: dict = Depends(verify_jwt_token)):
     return update_task_status(id, status)
 
 
 @router.post('/', response_model=Task)
-def create_task(task: TaskCreate):
+def create_task(task: TaskCreate, current_user: dict = Depends(verify_jwt_token)):
     return addTask(task)
 
 
 @router.delete('/{id}')
-def delete_task(id: int):
+def delete_task(id: int, current_user: dict = Depends(verify_jwt_token)):
     return delete(id)

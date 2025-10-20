@@ -1,9 +1,8 @@
 from pymongo import MongoClient
 
-MONGO_URL = 'mongodb://localhost:27017/'
+from backend.app.core.config import Settings
 
-
-client= MongoClient(MONGO_URL)
+client = MongoClient(Settings.MONGO_URI)
 db = client['ToDoApp']
 task_collection = db['tasks']
 user_collection = db['users']

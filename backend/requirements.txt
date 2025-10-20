@@ -2,3 +2,7 @@ FastApi
 uvicorn
 bcrypt
 pymongo
+jose
+jwt
+passlib
+python_dotenv
