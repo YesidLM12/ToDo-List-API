@@ -1,10 +1,15 @@
 import json
 from app.schemas.task_schema import Task, TaskCreate
+from app.core.database import task_collection
 
 
 def addTask(task: TaskCreate):
     if len(task.description) < 3:
-        return {'error': 'Description task must be more tha 3 characters'}
+        return {'error': 'Description task must be more than 3 characters'}
+    
+    task_collection.insert_one(task.model_dump())
+    return {'message': 'Task add succesfully'}
+
     try:
         try:
             with open('tasks.json', 'r', encoding='utf-8') as D:

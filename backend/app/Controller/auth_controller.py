@@ -1,8 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.user_schema import User, UserLogin
 from app.core.database import user_collection
-from backend.app.helpers.user_serializer import user_serializer
-from backend.app.utils.auth import create_jwt_token, hash_password, verify_password
+from app.utils.auth import create_jwt_token, hash_password, verify_password
 
 router = APIRouter
 

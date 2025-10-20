@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from backend.app.core.config import Settings
+from app.core.config import settings
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -22,21 +22,21 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_jwt_token(email: str) -> str:
     now = datetime.utcnow()
-    expire = now + timedelta(minutes=Settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = now + timedelta(minutes= settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {
         'sub': email,
         'iat': int(now.timestamp()),
         'exp': int(expire.timestamp()),
     }
-    token = jwt.encode(payload, Settings.SECRET_KEY,
-                       algorithm=Settings.ALGORITHM)
+    token = jwt.encode(payload, settings.SECRET_KEY,
+                       algorithm=settings.ALGORITHM)
     return token
 
 
 def verify_jwt_token(token: str = Depends(oauth2_scheme)):
     try:
-        payload = jwt.decode(token, Settings.SECRET_KEY,
-                             algorithms=[Settings.ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY,
+                             algorithms=[settings.ALGORITHM])
         email = payload.get('sub')
         if email is None:
             raise HTTPException(

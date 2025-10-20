@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = Field(default='ultrahipermegaultrasecreta')
     ALGORITHM: str = Field(default='HS256')
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=60)
-    MONGO_URI: str | None = Field(default=None)
+    MONGO_URI: str | None = Field(default='mongodb://localhost:27017/')
 
     class Config:
         env_file = '.env'

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import tasks_routes
 import uvicorn
 
-from backend.app.api.routes import auth_routes
+from app.api.routes import auth_routes
 
 
 app = FastAPI(title='API with FastAPI and MongoDB')
