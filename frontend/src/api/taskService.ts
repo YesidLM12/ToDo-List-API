@@ -2,6 +2,11 @@ import type { Task } from "../types/task";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const getAuthHeader = (): Record<string, string> | undefined => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : undefined;
+};
+
 export const getTasks = async (): Promise<Task[]> => {
   const res = await fetch(`${API_URL}/task`);
   if (!res.ok) throw new Error("Error fetching tasks");
@@ -10,8 +15,8 @@ export const getTasks = async (): Promise<Task[]> => {
 
 export const createTask = async (task: Omit<Task, "id">): Promise<Task> => {
   const res = await fetch(`${API_URL}/task`, {
-    method: "Post",
-    headers: { "Content-Type": "aplication/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(getAuthHeader() ?? {}) },
     body: JSON.stringify(task),
   });
 
@@ -24,11 +29,11 @@ export const updateTask = async (
   data: Partial<Task>
 ): Promise<Task> => {
   const res = await fetch(`${API_URL}/task/${id}`, {
-    method: "Patch",
-    headers: { "Content-type": "aplication/json" },
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...(getAuthHeader() ?? {}) },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Erreo updating task");
+  if (!res.ok) throw new Error("Error updating task");
   return res.json();
 };
 
