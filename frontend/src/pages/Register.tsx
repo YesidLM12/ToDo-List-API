@@ -10,7 +10,7 @@ export const Register = () => {
     e.preventDefault();
 
     try {
-      await resgisterUser({ username, password });
+      await resgisterUser({ username, email, password });
       setMessage("User registered! You can now log in.");
     } catch {
       setMessage("Error registering user");
