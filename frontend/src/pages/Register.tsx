@@ -33,7 +33,7 @@ export const Register = () => {
         <input
           type="email"
           placeholder="Email"
-          value={username}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
