@@ -1,20 +1,8 @@
+import type { AuthResponse } from "../types/authResponse";
+import type { UserLoginCredentials } from "../types/userLogin";
+import type { UserRegisterCredentials } from "../types/UserRegister";
+
 const API_URL = import.meta.env.VITE_API_URL;
-
-export interface AuthResponse {
-  access_token: string;
-  token_type: string;
-}
-
-export interface UserLoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface UserRegisterCredentials {
-  username: string;
-  email: string;
-  password: string;
-}
 
 export const login = async (
   credentials: UserLoginCredentials

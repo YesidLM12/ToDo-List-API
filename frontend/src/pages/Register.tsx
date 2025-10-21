@@ -3,6 +3,7 @@ import { resgisterUser } from "../api/authService";
 
 export const Register = () => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
@@ -28,6 +29,15 @@ export const Register = () => {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={username}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
         <input
           type="password"
           placeholder="Password"

@@ -4,14 +4,14 @@ import { useAuth } from "../hooks/useAuth";
 
 export const Login = () => {
   const { login } = useAuth();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await loginService({ email, password });
+      const data = await loginService({email, password });
       login(data.access_token);
       window.location.href = "/";
     } catch {
@@ -26,8 +26,8 @@ export const Login = () => {
         <input
           type="text"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
