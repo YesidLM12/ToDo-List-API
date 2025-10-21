@@ -46,40 +46,19 @@ def update_task_status(id: str, status: str):
         return {"error": "Task not found or status unchanged"}
 
 
-def update_task(id: int, description: str):
-    try:
-        with open('tasks.json', 'r', encoding='utf-8') as D:
-            data = json.load(D)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {'error': 'No tasks avaliable'}
+def update_task(id: str, description: str):
+    id = id.strip()
+    result = task_collection.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {'description': description}}
+    )
 
-    find = False
-    for task in data:
-        if task.get('id') == id:
-            task['description'] = description
-            find = True
-            break
-
-    if find:
-        with open('tasks.json', 'w', encoding='utf-8') as D:
-            json.dump(data, D, indent=2, ensure_ascii=False)
-        return {'message': 'Task updated successfully'}
+    if result.modified_count == 1:
+        return {"message": "Task updated successfully"}
     else:
-        return {'error': 'Task not found'}
+        return {"error": "Task not found or status unchanged"}
 
 
-def delete(id: int):
-    try:
-        with open('tasks.json', 'r', encoding='utf-8') as D:
-            data = json.load(D)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {'error': 'No tasks avaliable'}
-
-    newTask = [task for task in data if task.get('id') != id]
-
-    if len(newTask) == len(data):
-        return {'error': 'Task not found'}
-    else:
-        with open('tasks.json', 'w', encoding='utf-8') as D:
-            json.dump(newTask, D, indent=2, ensure_ascii=False)
-        return {'message': 'Task delete succesfully'}
+def delete(id: str):
+    task_collection.delete_one({'_id': id})
+    return {'message': 'Task delete succesfully'}
