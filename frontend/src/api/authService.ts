@@ -5,13 +5,19 @@ export interface AuthResponse {
   token_type: string;
 }
 
-export interface UserCredentials {
-  username: string;
+export interface UserLoginCredentials {
+  email: string;
   password: string;
 }
 
+export interface UserRegisterCredentials {
+  username: string;
+  email: string;
+  Password: string;
+}
+
 export const login = async (
-  credentials: UserCredentials
+  credentials: UserLoginCredentials
 ): Promise<AuthResponse> => {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "Post",
@@ -23,7 +29,7 @@ export const login = async (
 };
 
 export const resgisterUser = async (
-  credentials: UserCredentials
+  credentials: UserRegisterCredentials
 ): Promise<any> => {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "Post",
