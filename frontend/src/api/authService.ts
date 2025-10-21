@@ -13,7 +13,7 @@ export interface UserLoginCredentials {
 export interface UserRegisterCredentials {
   username: string;
   email: string;
-  Password: string;
+  password: string;
 }
 
 export const login = async (

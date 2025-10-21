@@ -11,7 +11,7 @@ export const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await loginService({ username, password });
+      const data = await loginService({ email, password });
       login(data.access_token);
       window.location.href = "/";
     } catch {
