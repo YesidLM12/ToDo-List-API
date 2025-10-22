@@ -14,7 +14,7 @@ def get_tasks(current_user: dict = Depends(verify_jwt_token)):
 
 
 @router.patch('/{id}')
-def uptdate_task(id: int, description: str, current_user: dict = Depends(verify_jwt_token)):
+def uptdate_task(id: str, description: str, current_user: dict = Depends(verify_jwt_token)):
     return update_task(id, description)
 
 
@@ -34,5 +34,5 @@ def create_task(task: TaskCreate, current_user: dict = Depends(verify_jwt_token)
 
 
 @router.delete('/{id}')
-def delete_task(id: int, current_user: dict = Depends(verify_jwt_token)):
+def delete_task(id: str, current_user: dict = Depends(verify_jwt_token)):
     return delete(id)
