@@ -13,7 +13,6 @@ export const Login = () => {
     try {
       const data = await loginService({email, password });
       login(data.access_token);
-      window.location.href = "/";
     } catch {
       setError("Invalid credentials");
     }

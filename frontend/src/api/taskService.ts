@@ -1,27 +1,53 @@
+import { getAuthHeader } from "../helpers/getAuthHeader";
 import type { Task } from "../types/task";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const getAuthHeader = (): Record<string, string> | undefined => {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : undefined;
-};
-
 export const getTasks = async (): Promise<Task[]> => {
-  const res = await fetch(`${API_URL}/task`);
-  if (!res.ok) throw new Error("Error fetching tasks");
-  return res.json();
+  try {
+    const response = await fetch(`${API_URL}/task/`, {
+      headers: {
+        "Content-type": "application/json",
+        ...(getAuthHeader() ?? {}),
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        "Fetch failed:",
+        response.status,
+        response.statusText,
+        errorText
+      );
+      throw new Error(`Error fetching tasks: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
 
 export const createTask = async (task: Omit<Task, "id">): Promise<Task> => {
-  const res = await fetch(`${API_URL}/task`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...(getAuthHeader() ?? {}) },
-    body: JSON.stringify(task),
-  });
+  try {
+    const res = await fetch(`${API_URL}/task`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(getAuthHeader() ?? {}),
+      },
+      body: JSON.stringify(task),
+    });
 
-  if (!res.ok) throw new Error("Error creating task");
-  return res.json();
+    if (!res.ok) throw new Error("Error creating task");
+
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
 
 export const updateTask = async (

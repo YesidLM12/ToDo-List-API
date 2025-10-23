@@ -24,5 +24,4 @@ def login(credentials: UserLogin):
         raise HTTPException(status_code=401, detail='Invlaid credentials')
 
     token = create_jwt_token(user['email'])
-    return {'acces_token': token, 'token_type': 'bearer'}
-
+    return {'access_token': token, 'token_type': 'Bearer'}

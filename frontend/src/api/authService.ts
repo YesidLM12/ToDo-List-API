@@ -8,19 +8,25 @@ export const login = async (
   credentials: UserLoginCredentials
 ): Promise<AuthResponse> => {
   const res = await fetch(`${API_URL}/auth/login`, {
-    method: "Post",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
   if (!res.ok) throw new Error("Invalid credentials");
-  return res.json();
+
+  const data = await res.json();
+  console.log("Login response:", data); // 👈 Agrega esto para debug
+  console.log("Token:", data.access_token);
+  localStorage.setItem("token", data.access_token);
+
+  return data;
 };
 
 export const resgisterUser = async (
   credentials: UserRegisterCredentials
 ): Promise<any> => {
   const res = await fetch(`${API_URL}/auth/register`, {
-    method: "Post",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
