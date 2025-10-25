@@ -15,8 +15,6 @@ export const login = async (
   if (!res.ok) throw new Error("Invalid credentials");
 
   const data = await res.json();
-  console.log("Login response:", data); // 👈 Agrega esto para debug
-  console.log("Token:", data.access_token);
   localStorage.setItem("token", data.access_token);
 
   return data;

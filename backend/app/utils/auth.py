@@ -1,24 +1,26 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer
+
 
 from app.core.config import settings
 
 
-pwd_context = CryptContext(schemes=['bcrypt'], bcrypt__ident="2b", deprecated='auto')
+pwd_context = CryptContext(
+    schemes=['bcrypt'], bcrypt__ident="2b", deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
 
 
 def hash_password(password: str) -> str:
     password = str(password).strip()
     encoded = password.encode('utf-8')
-    
+
     if len(encoded) > 72:
         encoded = encoded[:72]
         password = encoded.decode('utf-8', errors='ignore')
-        
+
     try:
         hashed = pwd_context.hash(password)
         print('hash generado correctamente')
@@ -26,8 +28,6 @@ def hash_password(password: str) -> str:
     except Exception as e:
         print('Error durante el hash: ', e)
         raise
-
-    
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -58,3 +58,20 @@ def verify_jwt_token(token: str = Depends(oauth2_scheme)):
         return {'email': str(email)}
     except JWTError:
         raise HTTPException(status_code=401, detail='Invalid or expire token')
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail='No se pudo validar las credenciales',
+        headers={'WWW-Authenticate': 'Bearer'}
+    )
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY,
+                             algorithms=[settings.ALGORITHM])
+        user_id = payload.get('sub')
+        if user_id is None:
+            raise credentials_exception
+        return user_id
+    except jwt:
+        raise credentials_exception
